@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>English Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --border: rgba(0,0,0,0.08);
+    --border-med: rgba(0,0,0,0.14);
+    --text: #1A1A18;
+    --muted: #888880;
+    --hint: #BBBBBA;
+    --accent: #1A1A18;
+    --accent-text: #FFFFFF;
+    --green: #2D6A4F;
+    --green-bg: #EAF4EE;
+    --red: #B5341A;
+    --red-bg: #FDF0ED;
+    --blue: #1B4F8A;
+    --blue-bg: #EBF1FA;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 52px 20px 16px;
+    background: var(--bg);
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+  }
+  .header p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    gap: 6px;
+    padding: 0 20px 16px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .nav-btn {
+    flex: 1;
+    padding: 8px 4px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .nav-btn.active {
+    background: var(--accent);
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+
+  /* SCREENS */
+  .screen { display: none; padding: 0 20px; }
+  .screen.active { display: block; }
+
+  /* SECTION LABEL */
+  .label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hint);
+    margin-bottom: 8px;
+  }
+
+  /* CAT BAR */
+  .cat-bar {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .cat-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.1s;
+  }
+  .cat-btn.sel {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* PHRASE LIST */
+  .search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    margin-bottom: 10px;
+    outline: none;
+  }
+  .search-input:focus { border-color: var(--border-med); }
+  .phrase-count { font-size: 11px; color: var(--hint); margin-bottom: 8px; }
+  .phrase-list { display: flex; flex-direction: column; gap: 6px; }
+  .phrase-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .phrase-row .en { font-size: 14px; font-weight: 500; }
+  .phrase-row .jp { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* CARDS */
+  .add-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .add-card input {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+  }
+  .add-card input:focus { border-color: var(--border-med); }
+  .btn {
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-med);
+    background: var(--surface);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:active { opacity: 0.7; transform: scale(0.98); }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn-green { background: var(--green-bg); color: var(--green); border-color: rgba(45,106,79,0.2); }
+  .btn-red { background: var(--red-bg); color: var(--red); border-color: rgba(181,52,26,0.2); }
+
+  .fc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    cursor: pointer;
+    margin-bottom: 6px;
+    transition: border-color 0.15s;
+  }
+  .fc-card .en { font-size: 14px; font-weight: 500; }
+  .fc-card .jp { font-size: 13px; color: var(--muted); margin-top: 4px; display: none; }
+  .fc-card.flipped .jp { display: block; }
+  .fc-card .tap-hint { font-size: 10px; color: var(--hint); margin-top: 6px; }
+
+  /* QUIZ */
+  .quiz-wrap { display: flex; flex-direction: column; gap: 12px; }
+  .dir-row { display: flex; gap: 8px; }
+  .dir-btn {
+    flex: 1;
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: center;
+  }
+  .dir-btn.sel { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .stats-row { display: flex; gap: 8px; }
+  .stat-box {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    text-align: center;
+  }
+  .stat-n { font-size: 22px; font-weight: 500; font-family: 'DM Mono', monospace; }
+  .stat-l { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 20px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+  }
+  .quiz-q { font-size: 16px; font-weight: 500; line-height: 1.5; }
+  .quiz-sub { font-size: 11px; color: var(--hint); }
+  .quiz-ans {
+    width: 100%;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    color: var(--text);
+    display: none;
+    text-align: center;
+    font-weight: 500;
+  }
+  .quiz-ans.show { display: block; }
+  .judge-row { display: flex; gap: 8px; }
+
+  /* VOICE */
+  .voice-wrap { display: flex; flex-direction: column; gap: 12px; }
+  .voice-status {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--hint);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .status-dot.listening { background: #E05A2B; animation: pulse 1s infinite; }
+  .status-dot.thinking { background: var(--blue); animation: pulse 0.8s infinite; }
+  .status-dot.speaking { background: var(--green); animation: pulse 0.6s infinite; }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .voice-msgs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+  .vmsg {
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.55;
+    max-width: 85%;
+  }
+  .vmsg.ai {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .vmsg.user {
+    background: var(--accent);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .mic-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    margin: 8px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .mic-btn.listening {
+    background: #E05A2B;
+    transform: scale(1.08);
+    box-shadow: 0 0 0 8px rgba(224,90,43,0.15);
+  }
+  .mic-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .voice-topic-bar { display: flex; gap: 6px; flex-wrap: wrap; }
+  .api-key-box {
+    background: var(--blue-bg);
+    border: 1px solid rgba(27,79,138,0.2);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 12px;
+    color: var(--blue);
+    line-height: 1.6;
+  }
+  .api-input {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    background: var(--surface);
+    color: var(--text);
+    margin-top: 8px;
+    outline: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>English Practice</h1>
+  <p>Hiroya's personal learning app</p>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="sw('phrases')">Phrases</button>
+  <button class="nav-btn" onclick="sw('cards')">Cards</button>
+  <button class="nav-btn" onclick="sw('quiz')">Quiz</button>
+  <button class="nav-btn" onclick="sw('voice')">Voice</button>
+</div>
+
+<!-- PHRASES -->
+<div class="screen active" id="s-phrases">
+  <input class="search-input" type="text" placeholder="Search phrases..." oninput="renderPhrases(this.value)"/>
+  <div class="label">Category</div>
+  <div class="cat-bar" id="ph-cats"></div>
+  <div class="phrase-count" id="ph-count"></div>
+  <div class="phrase-list" id="ph-list"></div>
+</div>
+
+<!-- CARDS -->
+<div class="screen" id="s-cards">
+  <div class="add-card">
+    <div class="label">Add new card</div>
+    <input type="text" id="fc-en" placeholder="English"/>
+    <input type="text" id="fc-jp" placeholder="Japanese"/>
+    <button class="btn btn-primary" onclick="addCard()">Add card</button>
+  </div>
+  <div class="cat-bar" id="fc-cats"></div>
+  <div id="fc-list"></div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="s-quiz">
+  <div class="quiz-wrap">
+    <div>
+      <div class="label">Direction</div>
+      <div class="dir-row">
+        <button class="dir-btn sel" onclick="setDir(this,'en')">English → Japanese</button>
+        <button class="dir-btn" onclick="setDir(this,'jp')">Japanese → English</button>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-n" id="q-ok">0</div><div class="stat-l">Got it ✓</div></div>
+      <div class="stat-box"><div class="stat-n" id="q-ng">0</div><div class="stat-l">Review ✗</div></div>
+      <div class="stat-box"><div class="stat-n" id="q-rem">—</div><div class="stat-l">Left</div></div>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-q" id="q-q">Press Start</div>
+      <div class="quiz-sub" id="q-sub"></div>
+      <div class="quiz-ans" id="q-ans"></div>
+    </div>
+    <button class="btn" id="q-reveal" onclick="revealQuiz()" style="display:none;font-size:14px;padding:13px;">👆 Reveal answer</button>
+    <div class="judge-row" id="q-judge" style="display:none">
+      <button class="btn btn-red" onclick="judgeQuiz(false)" style="flex:1">✗ Need review</button>
+      <button class="btn btn-green" onclick="judgeQuiz(true)" style="flex:1">✓ Got it!</button>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()">▶ Start / Restart</button>
+  </div>
+</div>
+
+<!-- VOICE -->
+<div class="screen" id="s-voice">
+  <div class="voice-wrap">
+    <div class="api-key-box">
+      <strong>API Key required</strong><br/>
+      Enter your Anthropic API key to use voice chat. It stays in your device only.
+      <input class="api-input" type="password" id="api-key-input" placeholder="sk-ant-..." oninput="saveKey(this.value)"/>
+    </div>
+    <div>
+      <div class="label">Topic</div>
+      <div class="voice-topic-bar" id="v-topics">
+        <button class="cat-btn sel" onclick="setVTopic(this,'Daily conversation')">Daily</button>
+        <button class="cat-btn" onclick="setVTopic(this,'Medical English')">Medical</button>
+        <button class="cat-btn" onclick="setVTopic(this,'Travel English')">Travel</button>
+        <button class="cat-btn" onclick="setVTopic(this,'Business English')">Business</button>
+      </div>
+    </div>
+    <div class="voice-status" id="v-status">
+      <div class="status-dot" id="v-dot"></div>
+      <span id="v-status-text">Tap the mic to start</span>
+    </div>
+    <div class="voice-msgs" id="v-msgs"></div>
+    <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎙</button>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const PHRASES = [
+  {en:"I already have plans tonight.",jp:"今日予定あるわ",cat:"Daily"},
+  {en:"Call it a day",jp:"今日はここまでにする",cat:"Daily"},
+  {en:"Take your time",jp:"焦らないで、ゆっくりでいいよ",cat:"Daily"},
+  {en:"Cheer me up",jp:"元気づけてくれた",cat:"Daily"},
+  {en:"Give me a hand",jp:"手伝って",cat:"Daily"},
+  {en:"That's a good one",jp:"それおもろい（ジョークとか）",cat:"Daily"},
+  {en:"No thanks, but thank you anyway",jp:"いらんけど、まあありがとうな",cat:"Daily"},
+  {en:"Hold on a second",jp:"ちょっと待ってね",cat:"Daily"},
+  {en:"Check this out!",jp:"ちょっとみてよ",cat:"Daily"},
+  {en:"I'll let you know",jp:"また連絡するわ",cat:"Daily"},
+  {en:"I'm not familiar with that",jp:"あんまりよくわからない",cat:"Daily"},
+  {en:"Get into",jp:"ハマる",cat:"Daily"},
+  {en:"I'm just kidding",jp:"冗談だけど",cat:"Daily"},
+  {en:"I'm gonna search it later.",jp:"あとで調べてみるわ",cat:"Daily"},
+  {en:"That's what I heard",jp:"そう聞いたよ",cat:"Daily"},
+  {en:"I might do it by myself",jp:"1人でいこうかな",cat:"Daily"},
+  {en:"Give it a try",jp:"試してみ！",cat:"Daily"},
+  {en:"I got something for you",jp:"渡したいものあるわ",cat:"Daily"},
+  {en:"I'd rather go by car.",jp:"むしろ車がいいなー",cat:"Daily"},
+  {en:"My flight got cancelled.",jp:"フライトがキャンセルされた",cat:"Daily"},
+  {en:"I didn't expect that",jp:"まさかね",cat:"Daily"},
+  {en:"I'm looking forward to it.",jp:"楽しみにしています",cat:"Daily"},
+  {en:"Here you go",jp:"どうぞ",cat:"Daily"},
+  {en:"Go for it",jp:"やってみて",cat:"Daily"},
+  {en:"I have a sweet tooth.",jp:"甘党なんだよね",cat:"Daily"},
+  {en:"Let's see",jp:"そうだなー、どうかな",cat:"Daily"},
+  {en:"That's what I thought.",jp:"やっぱね！",cat:"Daily"},
+  {en:"It's worth trying.",jp:"試す価値あるよ",cat:"Daily"},
+  {en:"I can't go home until I finish this.",jp:"これを終わらせるまで帰れない",cat:"Daily"},
+  {en:"I didn't notice that",jp:"気づかなかったよ",cat:"Daily"},
+  {en:"I'm heading to my workplace now",jp:"今から仕事です",cat:"Daily"},
+  {en:"I can see you're tired, so I won't stay long.",jp:"疲れていそうだから早めに帰るよ",cat:"Daily"},
+  {en:"I have a headache / I've got a headache",jp:"頭が痛い",cat:"Daily"},
+  {en:"I'm working tomorrow.",jp:"明日仕事があります",cat:"Daily"},
+  {en:"I traveled alone",jp:"1人旅した",cat:"Daily"},
+  {en:"If I have enough time, I'd like to travel around Europe.",jp:"まとまった時間が取れたらヨーロッパを回りたい",cat:"Daily"},
+  {en:"As far as I know, her daughter is a doctor.",jp:"知ってる限りだと、彼女の娘さんはお医者さん",cat:"Daily"},
+  {en:"I didn't catch you",jp:"わからなかった",cat:"Daily"},
+  {en:"I have time to play basketball because I have no exams.",jp:"試験がないからバスケする余裕がある",cat:"Daily"},
+  {en:"He always has parties.",jp:"彼がいつもパーティーを開催してくれる",cat:"Daily"},
+  {en:"I have a huge respect for you.",jp:"あなたのことをすごく尊敬している",cat:"Daily"},
+  {en:"You are not shy anymore",jp:"もはやシャイじゃないね",cat:"Daily"},
+  {en:"I'm supposed to go somewhere with my friends.",jp:"これから友達とどっかいくつもり",cat:"Daily"},
+  {en:"There are many areas just like that",jp:"こんな感じの場所多いよ",cat:"Daily"},
+  {en:"I'm very interested in any kind of food",jp:"どんな食べ物にも興味あるわ",cat:"Daily"},
+  {en:"If you need anything, give me a call.",jp:"もしなんかあったら連絡してね",cat:"Daily"},
+  {en:"It seems like we have to leave before they finish.",jp:"彼らが終わるまでに出ないとだめみたい",cat:"Daily"},
+  {en:"I've been learning English for about three months.",jp:"3ヶ月前から英語の勉強してる",cat:"Daily"},
+  {en:"I'm not confident that I speak English",jp:"あんまり英語に自信ないんだよね",cat:"Daily"},
+  {en:"As I told you before",jp:"前にも言った通り〜",cat:"Daily"},
+  {en:"Go along this street.",jp:"この通り沿いに進んで",cat:"Daily"},
+  {en:"I can see you're tired, so I won't stay long.",jp:"疲れていそうだから早めに帰るよ",cat:"Daily"},
+  // Let
+  {en:"Let me ask you a question.",jp:"質問させて",cat:"Let phrases"},
+  {en:"Let me know about the party.",jp:"そのパーティについて教えてください",cat:"Let phrases"},
+  {en:"Let me help you",jp:"お手伝いしますよ",cat:"Let phrases"},
+  {en:"Let's say, we have a big house.",jp:"たとえば、私たちが大きな家を持っているとします",cat:"Let phrases"},
+  {en:"I will let you know if I decide to visit Osaka.",jp:"大阪に行くか決まったら伝えます",cat:"Let phrases"},
+  {en:"Let's do that",jp:"そうしよう",cat:"Let phrases"},
+  // Restaurant
+  {en:"It's on me",jp:"奢るよ",cat:"Restaurant"},
+  {en:"We can split the bill",jp:"割り勘しよ",cat:"Restaurant"},
+  {en:"Do you serve coffee?",jp:"コーヒーある？",cat:"Restaurant"},
+  {en:"Did you get full?",jp:"お腹いっぱい？",cat:"Restaurant"},
+  {en:"Should I order first?",jp:"注文が先ですか？",cat:"Restaurant"},
+  {en:"What are you going to get?",jp:"何にする？",cat:"Restaurant"},
+  {en:"I'm gonna go with a beer please",jp:"ビールください",cat:"Restaurant"},
+  {en:"Yes, for now",jp:"とりあえずそれで",cat:"Restaurant"},
+  {en:"I'm looking for a blue shirt",jp:"青いシャツを探してる",cat:"Restaurant"},
+  // Meeting
+  {en:"How have you been lately?",jp:"最近どう？",cat:"Meeting"},
+  {en:"What have you been up to?",jp:"最近どんな感じ？",cat:"Meeting"},
+  {en:"How was your day?",jp:"今日どうだった？",cat:"Meeting"},
+  {en:"Thank you for inviting me",jp:"誘ってくれてありがとう",cat:"Meeting"},
+  {en:"I'm so glad that I met you.",jp:"会えてめっちゃ嬉しい",cat:"Meeting"},
+  {en:"It was easy to talk to you.",jp:"話しやすいよ",cat:"Meeting"},
+  {en:"I think we have met somewhere in Kochi",jp:"どこかで会ったことある気がする",cat:"Meeting"},
+  {en:"I like your style",jp:"服かわいいね",cat:"Meeting"},
+  // Responses
+  {en:"You too! / Thanks, you too!",jp:"あなたも！（Have a nice dayへの返事）",cat:"Responses"},
+  {en:"No worries.",jp:"気にしないで",cat:"Responses"},
+  {en:"Lucky you",jp:"いいなー",cat:"Responses"},
+  {en:"Good for you!",jp:"よかったね",cat:"Responses"},
+  {en:"I'm down",jp:"あり！！",cat:"Responses"},
+  {en:"I'm jealous",jp:"いいなー（羨ましい）",cat:"Responses"},
+  {en:"That's lit",jp:"めっちゃいいやん、最高じゃん",cat:"Responses"},
+  {en:"Kind of",jp:"そんな感じ",cat:"Responses"},
+  {en:"Sure. Sounds good.",jp:"もちろん、ええやん",cat:"Responses"},
+  {en:"Quite a lot",jp:"かなりね",cat:"Responses"},
+  {en:"Not really",jp:"そうでもないよ",cat:"Responses"},
+  {en:"Not at all.",jp:"全然、気にしないで",cat:"Responses"},
+  {en:"Things happen",jp:"そういうこともあるよね",cat:"Responses"},
+  {en:"There you go",jp:"できたやん！",cat:"Responses"},
+  {en:"Not a bit",jp:"ちっとも",cat:"Responses"},
+  {en:"That's fire",jp:"かっけえ！",cat:"Responses"},
+  {en:"I totally agree with that",jp:"それな",cat:"Responses"},
+  {en:"It should be fine",jp:"多分大丈夫",cat:"Responses"},
+  {en:"That's valid",jp:"了解！",cat:"Responses"},
+  {en:"Easy money",jp:"余裕だわ",cat:"Responses"},
+  {en:"No cap",jp:"まじで",cat:"Responses"},
+  {en:"Deadass",jp:"まじ？",cat:"Responses"},
+  {en:"Facts",jp:"それな",cat:"Responses"},
+  {en:"My pleasure",jp:"どういたしまして",cat:"Responses"},
+  {en:"Good to hear that",jp:"よかったね、安心したわ",cat:"Responses"},
+  {en:"Could be",jp:"そうかもね（maybe）",cat:"Responses"},
+  {en:"I don't mind",jp:"いいよ",cat:"Responses"},
+  {en:"Me as well",jp:"おれも同じよ",cat:"Responses"},
+  {en:"I also feel that",jp:"それな（共感）",cat:"Responses"},
+  // Clarifying
+  {en:"Sorry, I didn't catch that.",jp:"今の聞き取れませんでした",cat:"Clarifying"},
+  {en:"Could you say that again, please?",jp:"もう一度言ってもらえますか？",cat:"Clarifying"},
+  {en:"Could you speak a little slower?",jp:"もう少しゆっくり話してもらえますか？",cat:"Clarifying"},
+  {en:"Did I get you right?",jp:"これであってる？",cat:"Clarifying"},
+  {en:"I didn't catch the last word",jp:"最後の言葉が聞こえなかった",cat:"Clarifying"},
+  {en:"What does that mean?",jp:"どういう意味？",cat:"Clarifying"},
+  {en:"Do you know what I mean?",jp:"伝わってる？",cat:"Clarifying"},
+  // Questions
+  {en:"Can I ask you something?",jp:"ちょっと質問していい？",cat:"Questions"},
+  {en:"How do you say this in English?",jp:"これって英語で何て言うんですか？",cat:"Questions"},
+  {en:"When is good for you?",jp:"いつが都合いい？",cat:"Questions"},
+  {en:"What are you up to tonight?",jp:"今夜は何してるの？",cat:"Questions"},
+  {en:"Why don't we just have a coffee?",jp:"コーヒー飲みに行かない？",cat:"Questions"},
+  {en:"Would you like to meet up?",jp:"会わない？",cat:"Questions"},
+  {en:"Are you free this evening?",jp:"今夜空いてる？",cat:"Questions"},
+  {en:"What's going on?",jp:"どうしたん？",cat:"Questions"},
+  {en:"How did you know each other?",jp:"どうやって知り合ったの？",cat:"Questions"},
+  {en:"Do you have any recs for us?",jp:"おすすめある？",cat:"Questions"},
+  {en:"What do you usually have for breakfast?",jp:"普段何食べてるん？",cat:"Questions"},
+  {en:"What do you usually do after work?",jp:"仕事の後何してるの？",cat:"Questions"},
+  {en:"Can we meet on Wednesday, if that works for you?",jp:"ご都合が良ければ水曜日に会わない？",cat:"Questions"},
+  {en:"Did you use to play basketball a lot?",jp:"昔はよくバスケしてたの？",cat:"Questions"},
+  {en:"Don't you think so?",jp:"そう思わない？",cat:"Questions"},
+  {en:"How long will you be staying?",jp:"どれくらいここにいるつもり？",cat:"Questions"},
+  {en:"Who did you come with?",jp:"誰と来たの？",cat:"Questions"},
+  {en:"Are there any foods you dislike?",jp:"苦手な食べ物ある？",cat:"Questions"},
+  {en:"How's your Japanese going?",jp:"日本語はどんな感じ？",cat:"Questions"},
+  {en:"Do native speakers use this expression?",jp:"この表現ってネイティブも使う？",cat:"Questions"},
+  {en:"What's the difference between these two?",jp:"この二つの違いは？",cat:"Questions"},
+  {en:"How was your day?",jp:"今日どうだった？",cat:"Questions"},
+  {en:"Are you going anywhere before today's dinner?",jp:"今日の夕食の前にどこかに出かけますか？",cat:"Questions"},
+  {en:"Have you already decided on the place for the party?",jp:"パーティーの場所ってもう決まってる？",cat:"Questions"},
+  {en:"Who are you friends with?",jp:"誰の友達？",cat:"Questions"},
+  {en:"Who invited you?",jp:"誰に誘ってもらったの？",cat:"Questions"},
+  // Prepositions (time)
+  {en:"on the 15th of May 2025",jp:"2025年の5月15日に（on = 特定の日）",cat:"Grammar tips"},
+  {en:"on Sunday",jp:"日曜日に（on = 面のイメージ）",cat:"Grammar tips"},
+  {en:"at 3 pm / at midnight",jp:"午後3時に / 夜12時に（at = 一点）",cat:"Grammar tips"},
+  {en:"in spring / in 2020 / in the morning",jp:"春に / 2020年に / 朝に（in = 期間の中）",cat:"Grammar tips"},
+  {en:"I have been in Kochi since 2022.",jp:"2022年から高知にいます（since = 起点）",cat:"Grammar tips"},
+  {en:"I have been in Kochi for 3 years.",jp:"高知に3年います（for = 期間）",cat:"Grammar tips"},
+  // Offering help
+  {en:"Can I help you with that?",jp:"それ、お手伝いしましょうか？",cat:"Offering help"},
+  {en:"Let me help you.",jp:"手伝いますね",cat:"Offering help"},
+  {en:"You okay?",jp:"大丈夫？",cat:"Offering help"},
+  {en:"I'll help you with that",jp:"手伝いますよ",cat:"Offering help"},
+  {en:"Excuse me, ma'am",jp:"すみません",cat:"Offering help"},
+  // Farewells
+  {en:"Have a good one",jp:"いい1日を",cat:"Farewells"},
+  {en:"Let's go for a drink again",jp:"また飲みに行こ",cat:"Farewells"},
+  // Rephrasing
+  {en:"Actually, can I have black tea instead?",jp:"やっぱり紅茶にします",cat:"Rephrasing"},
+  {en:"Sorry, I'll have black tea instead.",jp:"すみません、紅茶に変えます",cat:"Rephrasing"},
+  {en:"I mean, black tea.",jp:"あ、紅茶で（言い直し）",cat:"Rephrasing"},
+];
+
+// ── STATE ──────────────────────────────────────────────
+let userCards = [...PHRASES];
+let phCat = 'All', phSearch = '';
+let fcCat = 'All';
+let quizDir = 'en', quizQueue = [], quizOk = 0, quizNg = 0;
+let vTopic = 'Daily conversation', chatHistory = [];
+let isListening = false, isThinking = false;
+let recognition = null;
+let silenceTimer = null;
+let apiKey = localStorage.getItem('anthropic_key') || '';
+
+// ── TABS ──────────────────────────────────────────────
+function sw(tab) {
+  ['phrases','cards','quiz','voice'].forEach((t,i) => {
+    document.getElementById('s-'+t).classList.toggle('active', t===tab);
+    document.querySelectorAll('.nav-btn')[i].classList.toggle('active', t===tab);
+  });
+  if(tab==='cards') renderCards();
+  if(tab==='phrases') renderPhrases();
+}
+
+// ── PHRASES ──────────────────────────────────────────────
+function renderPhrases(search) {
+  if(search !== undefined) phSearch = search;
+  const cats = ['All', ...new Set(PHRASES.map(p=>p.cat))];
+  document.getElementById('ph-cats').innerHTML = cats.map(c =>
+    `<button class="cat-btn${c===phCat?' sel':''}" onclick="setPhCat('${c}')">${c}</button>`
+  ).join('');
+  let list = phCat==='All' ? PHRASES : PHRASES.filter(p=>p.cat===phCat);
+  if(phSearch) list = list.filter(p=>p.en.toLowerCase().includes(phSearch.toLowerCase())||p.jp.includes(phSearch));
+  document.getElementById('ph-count').textContent = list.length + ' phrases';
+  document.getElementById('ph-list').innerHTML = list.map(p=>`
+    <div class="phrase-row">
+      <div class="en">${p.en}</div>
+      <div class="jp">${p.jp}</div>
+    </div>`).join('');
+}
+function setPhCat(c) { phCat=c; renderPhrases(); }
+renderPhrases();
+
+// ── FLASHCARDS ──────────────────────────────────────────────
+function addCard() {
+  const en = document.getElementById('fc-en').value.trim();
+  const jp = document.getElementById('fc-jp').value.trim();
+  if(!en||!jp) return;
+  userCards.unshift({en,jp,cat:'My cards'});
+  document.getElementById('fc-en').value='';
+  document.getElementById('fc-jp').value='';
+  fcCat='My cards'; renderCards();
+}
+function renderCards() {
+  const cats = ['All', ...new Set(userCards.map(c=>c.cat))];
+  document.getElementById('fc-cats').innerHTML = cats.map(c =>
+    `<button class="cat-btn${c===fcCat?' sel':''}" onclick="setFcCat('${c}')">${c}</button>`
+  ).join('');
+  const list = fcCat==='All' ? userCards : userCards.filter(c=>c.cat===fcCat);
+  document.getElementById('fc-list').innerHTML = list.map(c=>`
+    <div class="fc-card" onclick="this.classList.toggle('flipped');this.querySelector('.tap-hint').textContent=this.classList.contains('flipped')?'Tap to hide':'Tap to reveal'">
+      <div class="en">${c.en}</div>
+      <div class="jp">${c.jp}</div>
+      <div class="tap-hint">Tap to reveal</div>
+    </div>`).join('');
+}
+function setFcCat(c) { fcCat=c; renderCards(); }
+
+// ── QUIZ ──────────────────────────────────────────────
+function setDir(el,dir) {
+  document.querySelectorAll('.dir-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel'); quizDir=dir;
+}
+function startQuiz() {
+  quizQueue = [...PHRASES].sort(()=>Math.random()-0.5);
+  quizOk=0; quizNg=0; updateStats(); nextQuiz();
+}
+function nextQuiz() {
+  updateStats();
+  document.getElementById('q-judge').style.display='none';
+  document.getElementById('q-reveal').style.display='none';
+  document.getElementById('q-ans').classList.remove('show');
+  if(!quizQueue.length) {
+    document.getElementById('q-q').textContent='🎉 Done! '+quizOk+' correct, '+quizNg+' to review.';
+    document.getElementById('q-sub').textContent='';
+    return;
+  }
+  const c = quizQueue[0];
+  document.getElementById('q-q').textContent = quizDir==='en' ? c.en : c.jp;
+  document.getElementById('q-sub').textContent = quizDir==='en' ? 'What does this mean?' : 'How do you say this in English?';
+  document.getElementById('q-ans').textContent = quizDir==='en' ? c.jp : c.en;
+  document.getElementById('q-reveal').style.display='block';
+}
+function revealQuiz() {
+  document.getElementById('q-ans').classList.add('show');
+  document.getElementById('q-reveal').style.display='none';
+  document.getElementById('q-judge').style.display='flex';
+}
+function judgeQuiz(ok) {
+  if(ok) quizOk++; else quizNg++;
+  quizQueue.shift(); nextQuiz();
+}
+function updateStats() {
+  document.getElementById('q-ok').textContent=quizOk;
+  document.getElementById('q-ng').textContent=quizNg;
+  document.getElementById('q-rem').textContent=quizQueue.length||'—';
+}
+
+// ── VOICE ──────────────────────────────────────────────
+function saveKey(v) {
+  apiKey = v;
+  localStorage.setItem('anthropic_key', v);
+}
+if(apiKey) document.getElementById('api-key-input').value = apiKey;
+
+function setVTopic(el, topic) {
+  document.querySelectorAll('#v-topics .cat-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  vTopic = topic;
+  chatHistory = [];
+  document.getElementById('v-msgs').innerHTML='';
+  setStatus('idle','Topic changed to '+topic+'. Tap mic to start.');
+}
+
+function setStatus(state, text) {
+  const dot = document.getElementById('v-dot');
+  const txt = document.getElementById('v-status-text');
+  dot.className = 'status-dot' + (state!=='idle' ? ' '+state : '');
+  txt.textContent = text;
+}
+
+function appendVMsg(text, role) {
+  const d = document.createElement('div');
+  d.className = 'vmsg '+role;
+  d.textContent = text;
+  const container = document.getElementById('v-msgs');
+  container.appendChild(d);
+  container.scrollTop = container.scrollHeight;
+}
+
+function toggleMic() {
+  if(isThinking) return;
+  if(isListening) {
+    stopListening();
+  } else {
+    startListening();
+  }
+}
+
+function startListening() {
+  if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('Speech recognition is not supported in this browser. Please use Safari on iPhone.');
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  let finalTranscript = '';
+  let interimTranscript = '';
+
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('mic-btn').classList.add('listening');
+    document.getElementById('mic-btn').textContent = '⏹';
+    setStatus('listening','Listening... (auto-sends on silence)');
+    finalTranscript = '';
+  };
+
+  recognition.onresult = (e) => {
+    interimTranscript = '';
+    for(let i=e.resultIndex; i<e.results.length; i++) {
+      if(e.results[i].isFinal) {
+        finalTranscript += e.results[i][0].transcript;
+      } else {
+        interimTranscript += e.results[i][0].transcript;
+      }
+    }
+    setStatus('listening', (finalTranscript + interimTranscript) || 'Listening...');
+
+    // Reset silence timer on every result
+    clearTimeout(silenceTimer);
+    if(finalTranscript) {
+      silenceTimer = setTimeout(() => {
+        stopListening(finalTranscript);
+      }, 1500); // 1.5s silence = done speaking
+    }
+  };
+
+  recognition.onerror = (e) => {
+    if(e.error !== 'no-speech') {
+      setStatus('idle', 'Error: ' + e.error);
+    }
+    stopListening(finalTranscript);
+  };
+
+  recognition.onend = () => {
+    if(isListening) {
+      // Auto-restart if stopped unexpectedly (iOS sometimes stops it)
+      if(!finalTranscript) {
+        recognition.start();
+      }
+    }
+  };
+
+  recognition.start();
+}
+
+function stopListening(transcript) {
+  clearTimeout(silenceTimer);
+  isListening = false;
+  if(recognition) { recognition.stop(); recognition = null; }
+  document.getElementById('mic-btn').classList.remove('listening');
+  document.getElementById('mic-btn').textContent = '🎙';
+
+  const text = (typeof transcript === 'string' ? transcript : '').trim();
+  if(text) {
+    sendToAI(text);
+  } else {
+    setStatus('idle','Tap the mic to start');
+  }
+}
+
+async function sendToAI(userText) {
+  if(!apiKey) {
+    setStatus('idle','Please enter your API key first.');
+    return;
+  }
+  appendVMsg(userText, 'user');
+  chatHistory.push({role:'user', content: userText});
+
+  isThinking = true;
+  document.getElementById('mic-btn').disabled = true;
+  setStatus('thinking','Thinking...');
+
+  const system = `You are a friendly English conversation partner helping a Japanese medical student named Hiroya practice English. Topic: ${vTopic}.
+Rules:
+- Reply naturally in English (2-4 sentences max)
+- After your reply add: "💡 Tip: [one short grammar or vocabulary note about what they said]"
+- Gently correct grammar errors
+- Be warm and encouraging
+- Never switch to Japanese`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-client-side-api-key-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 300,
+        system,
+        messages: chatHistory
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Sorry, something went wrong.';
+    chatHistory.push({role:'assistant', content: reply});
+    appendVMsg(reply, 'ai');
+    speak(reply);
+  } catch(e) {
+    setStatus('idle','Connection error. Check your API key.');
+    isThinking = false;
+    document.getElementById('mic-btn').disabled = false;
+  }
+}
+
+function speak(text) {
+  setStatus('speaking','Speaking...');
+  // Strip tip line for cleaner speech
+  const clean = text.replace(/💡 Tip:.*$/s,'').trim();
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.lang = 'en-US';
+  utt.rate = 0.92;
+  utt.onend = () => {
+    isThinking = false;
+    document.getElementById('mic-btn').disabled = false;
+    setStatus('idle','Tap mic to reply');
+  };
+  utt.onerror = () => {
+    isThinking = false;
+    document.getElementById('mic-btn').disabled = false;
+    setStatus('idle','Tap mic to reply');
+  };
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utt);
+}
+</script>
+</body>
+</html>
